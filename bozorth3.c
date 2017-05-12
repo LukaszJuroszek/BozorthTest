@@ -331,7 +331,8 @@ for ( k = 1; k < probe_ptrlist_len; k++ ) {
 		if ( n != b ) {
 			*rotptr++ = p1;
 			*rotptr++ = *(ss+3);
-			*rotptr++ = *(ss+4);
+			
+	 		*rotptr++ = *(ss+4);
 			*rotptr++ = *(ff+4);
 			*rotptr++ = *(ff+3);
 		} else {
