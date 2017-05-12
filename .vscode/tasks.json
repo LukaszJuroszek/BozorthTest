@@ -1,0 +1,18 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "0.1.0",
+    "command": "gcc",
+    "isShellCommand": true,
+    "args": ["-g", 
+    "bz_drvrs.c",
+    "bz_gbls.c",
+    "bz_sort.c",
+    "bz_alloc.c",
+    "bz_io.c",
+    "bozorth33.c",
+    "usage.c",
+    "bozorth3.c"
+    ],
+    "showOutput": "always"
+}
