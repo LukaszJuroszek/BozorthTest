@@ -1,0 +1,7 @@
+maximum scores line count = 1
+returning next argv: a2.xyt [done_afterwards=0]
+returning next argv: a0_2.xyt [done_afterwards=1]
+probefile=a2.xyt galleryfile=a0_2.xyt
+Loaded a2.xyt
+Loaded a0_2.xyt
+bozorth3: bz_match_score(): probe file has too few minutiae (0) to compute a real Bozorth match score; min. is 10 [p=a2.xyt; g=a0_2.xyt]

@@ -60,62 +60,62 @@ of the software.
 #include <stdlib.h>
 #include <bozorth.h>
 
-void usage( FILE * fp )
+void usage(FILE *fp)
 {
-fprintf( fp, "Usage:\n" );
-fprintf( fp, "   To compute match scores for fingerprint pairs:\n" );
-fprintf( fp, "        %s [options] probefile.xyt galleryfile.xyt [probefile galleryfile ...]\n",  PROGRAM );
-fprintf( fp, "        %s [options] -M mates.lis\n",                       PROGRAM );
-fprintf( fp, "        %s [options] -P probes.lis  gallery*.xyt\n",        PROGRAM );
-fprintf( fp, "        %s [options] -G gallery.lis probe*.xyt\n",          PROGRAM );
-fprintf( fp, "   To compute match scores for one fingerprint against many:\n" );
-fprintf( fp, "        %s [options] -p probefile.xyt      gallery*.xyt\n", PROGRAM );
-fprintf( fp, "        %s [options] -p probefile.xyt   -G gallery.lis\n",  PROGRAM );
-fprintf( fp, "        %s [options] -g galleryfile.xyt    probe*.xyt\n",   PROGRAM );
-fprintf( fp, "        %s [options] -g galleryfile.xyt -P probes.lis\n",   PROGRAM );
-fprintf( fp, "\n" );
-fprintf( fp, "General options:\n" );
-fprintf( fp, "   -h                      print this help message and exit\n" );
-fprintf( fp, "   -v                      enable verbose mode\n" );
+      fprintf(fp, "Usage:\n");
+      fprintf(fp, "   To compute match scores for fingerprint pairs:\n");
+      fprintf(fp, "        %s [options] probefile.xyt galleryfile.xyt [probefile galleryfile ...]\n", PROGRAM);
+      fprintf(fp, "        %s [options] -M mates.lis\n", PROGRAM);
+      fprintf(fp, "        %s [options] -P probes.lis  gallery*.xyt\n", PROGRAM);
+      fprintf(fp, "        %s [options] -G gallery.lis probe*.xyt\n", PROGRAM);
+      fprintf(fp, "   To compute match scores for one fingerprint against many:\n");
+      fprintf(fp, "        %s [options] -p probefile.xyt      gallery*.xyt\n", PROGRAM);
+      fprintf(fp, "        %s [options] -p probefile.xyt   -G gallery.lis\n", PROGRAM);
+      fprintf(fp, "        %s [options] -g galleryfile.xyt    probe*.xyt\n", PROGRAM);
+      fprintf(fp, "        %s [options] -g galleryfile.xyt -P probes.lis\n", PROGRAM);
+      fprintf(fp, "\n");
+      fprintf(fp, "General options:\n");
+      fprintf(fp, "   -h                      print this help message and exit\n");
+      fprintf(fp, "   -v                      enable verbose mode\n");
 
 #ifdef TESTING
-fprintf( fp, "   -i                      initialize globals to 0x00 before every match score computation\n" );
-fprintf( fp, "   -ii                     initialize globals to 0xFF before every match score computation\n" );
+      fprintf(fp, "   -i                      initialize globals to 0x00 before every match score computation\n");
+      fprintf(fp, "   -ii                     initialize globals to 0xFF before every match score computation\n");
 #endif
 
-fprintf( fp, "\n" );
-fprintf( fp, "Input options:\n" );
-fprintf( fp, "   -m1                     all xyt files use representation according to ANSI INCITS 378-2004\n");
-fprintf( fp, "   -n <max-minutiae>       set maximum number of munitiae to use from any file [%d]; legal range is [%d,%d]\n",
-								DEFAULT_BOZORTH_MINUTIAE,
-								MIN_BOZORTH_MINUTIAE,
-								MAX_BOZORTH_MINUTIAE );
-fprintf( fp, "   -A parameter=<value>\n" );
-fprintf( fp, "          minminutiae=#    set minimum number of munitiae for match score to be more than 0 [%d]\n",
-								MIN_COMPUTABLE_BOZORTH_MINUTIAE );
-fprintf( fp, "          maxfiles=#       set maximum number of files in any gallery, probe, or mates list file [%d]\n",
-								MAX_FILELIST_LENGTH );
-fprintf( fp, "          plines=#-#       process a subset of files in the probe file\n" );
-fprintf( fp, "          glines=#-#       process a subset of files in the gallery file\n" );
-fprintf( fp, "          dryrun           only print the filenames between which match scores would be computed\n" );
-fprintf( fp, "\n" );
-fprintf( fp, "Thresholding options:\n" );
-fprintf( fp, "   -T <threshold>          set match score threshold\n" );
-fprintf( fp, "   -q                      quit processing the probe file when a gallery file is found that meets the match score threshold\n" );
+      fprintf(fp, "\n");
+      fprintf(fp, "Input options:\n");
+      fprintf(fp, "   -m1                     all xyt files use representation according to ANSI INCITS 378-2004\n");
+      fprintf(fp, "   -n <max-minutiae>       set maximum number of munitiae to use from any file [%d]; legal range is [%d,%d]\n",
+              DEFAULT_BOZORTH_MINUTIAE,
+              MIN_BOZORTH_MINUTIAE,
+              MAX_BOZORTH_MINUTIAE);
+      fprintf(fp, "   -A parameter=<value>\n");
+      fprintf(fp, "          minminutiae=#    set minimum number of munitiae for match score to be more than 0 [%d]\n",
+              MIN_COMPUTABLE_BOZORTH_MINUTIAE);
+      fprintf(fp, "          maxfiles=#       set maximum number of files in any gallery, probe, or mates list file [%d]\n",
+              MAX_FILELIST_LENGTH);
+      fprintf(fp, "          plines=#-#       process a subset of files in the probe file\n");
+      fprintf(fp, "          glines=#-#       process a subset of files in the gallery file\n");
+      fprintf(fp, "          dryrun           only print the filenames between which match scores would be computed\n");
+      fprintf(fp, "\n");
+      fprintf(fp, "Thresholding options:\n");
+      fprintf(fp, "   -T <threshold>          set match score threshold\n");
+      fprintf(fp, "   -q                      quit processing the probe file when a gallery file is found that meets the match score threshold\n");
 
 #ifdef PARALLEL_SEARCH
-fprintf( fp, "   -A wfd=<fd>             write to this file descriptor when the probe file has been found in the gallery with match score threshold\n" );
-fprintf( fp, "   -A rfd=<fd>             monitor this file descriptor for readability indicating that the probe file has been found in the gallery\n" );
+      fprintf(fp, "   -A wfd=<fd>             write to this file descriptor when the probe file has been found in the gallery with match score threshold\n");
+      fprintf(fp, "   -A rfd=<fd>             monitor this file descriptor for readability indicating that the probe file has been found in the gallery\n");
 #endif
 
-fprintf( fp, "\n" );
-fprintf( fp, "Output options:\n" );
-fprintf( fp, "   -A nooutput             compute match scores, but don't print them\n" );
-fprintf( fp, "   -A outfmt=[spg]*        output lines will contain (s)core, (p)robe and/or (g)allery filename [%s]\n",
-								DEFAULT_SCORE_LINE_FORMAT );
-fprintf( fp, "   -D <score-dir>          set the directory to write score files in\n" );
-fprintf( fp, "   -o <score-file>         set the filename to store scores in\n" );
-fprintf( fp, "   -e <stderr-file>        set the filename to store other output\n" );
-fprintf( fp, "   -b                      use Standard I/O default buffering to print the match scores\n" );
-fprintf( fp, "   -l                      use line-buffering to print the match scores\n" );
+      fprintf(fp, "\n");
+      fprintf(fp, "Output options:\n");
+      fprintf(fp, "   -A nooutput             compute match scores, but don't print them\n");
+      fprintf(fp, "   -A outfmt=[spg]*        output lines will contain (s)core, (p)robe and/or (g)allery filename [%s]\n",
+              DEFAULT_SCORE_LINE_FORMAT);
+      fprintf(fp, "   -D <score-dir>          set the directory to write score files in\n");
+      fprintf(fp, "   -o <score-file>         set the filename to store scores in\n");
+      fprintf(fp, "   -e <stderr-file>        set the filename to store other output\n");
+      fprintf(fp, "   -b                      use Standard I/O default buffering to print the match scores\n");
+      fprintf(fp, "   -l                      use line-buffering to print the match scores\n");
 }

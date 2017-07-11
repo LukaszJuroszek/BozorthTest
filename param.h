@@ -13,9 +13,9 @@
 #include <limits.h>
 
 /* These are useful for cross-compiling */
-#define BIG_ENDIAN	4321
-#define LITTLE_ENDIAN	1234
-#define BYTE_ORDER	LITTLE_ENDIAN
+#define BIG_ENDIAN 4321
+#define LITTLE_ENDIAN 1234
+#define BYTE_ORDER LITTLE_ENDIAN
 
 #ifdef PATH_MAX
 #define MAXPATHLEN PATH_MAX

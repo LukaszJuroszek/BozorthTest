@@ -51,20 +51,20 @@
 
 _BEGIN_C_DECLS
 
-#if ! (defined _GETOPT_H && defined _UNISTD_H)
+#if !(defined _GETOPT_H && defined _UNISTD_H)
 /* This section of <getopt.h> is always to be processed, but it doesn't
  * need to be processed twice; if both _GETOPT_H and _UNISTD_H have been
  * defined, when we get to here, then we have reached this point for the
  * second time, so we may safely skip this section.
  */
-extern int optind;		/* index of first non-option in argv      */
-extern int optopt;		/* single option character, as parsed     */
-extern int opterr;		/* flag to enable built-in diagnostics... */
-				/* (user may set to zero, to suppress)    */
+extern int optind; /* index of first non-option in argv      */
+extern int optopt; /* single option character, as parsed     */
+extern int opterr; /* flag to enable built-in diagnostics... */
+                   /* (user may set to zero, to suppress)    */
 
-extern char *optarg;		/* pointer to argument of current option  */
+extern char *optarg; /* pointer to argument of current option  */
 
-extern int getopt( int, char * const [], const char * );
+extern int getopt(int, char *const[], const char *);
 
 #ifdef _BSD_SOURCE
 /* BSD adds the non-standard "optreset" feature, for reinitialization
@@ -72,36 +72,38 @@ extern int getopt( int, char * const [], const char * );
  * proclaim their BSD heritage, before including this header; however,
  * to maintain portability, developers are advised to avoid it.
  */
-# define optreset  __mingw_optreset
+#define optreset __mingw_optreset
 
 extern int optreset;
 
-#endif	/* _BSD_SOURCE */
-#endif	/* !(_GETOPT_H && _UNISTD_H) */
+#endif /* _BSD_SOURCE */
+#endif /* !(_GETOPT_H && _UNISTD_H) */
 
 #ifdef _GETOPT_H
 /* This is the section of <getopt.h> which declares the getopt_long()
  * and getopt_long_only() APIs; it is processed only when <getopt.h>
  * is included directly.
  */
-struct option		/* specification for a long form option...	*/
-{ const char *name;		/* option name, without leading hyphens */
-  int         has_arg;		/* does it take an argument?		*/
-  int        *flag;		/* where to save its status, or NULL	*/
-  int         val;		/* its associated status value		*/
+struct option /* specification for a long form option...	*/
+{
+  const char *name; /* option name, without leading hyphens */
+  int has_arg;      /* does it take an argument?		*/
+  int *flag;        /* where to save its status, or NULL	*/
+  int val;          /* its associated status value		*/
 };
 
-enum    		/* permitted values for its "has_arg" field...	*/
-{ no_argument = 0,      	/* option never takes an argument	*/
-  required_argument,		/* option always requires an argument	*/
-  optional_argument		/* option may take an argument		*/
+enum /* permitted values for its "has_arg" field...	*/
+{
+  no_argument = 0,   /* option never takes an argument	*/
+  required_argument, /* option always requires an argument	*/
+  optional_argument  /* option may take an argument		*/
 };
 
-extern int getopt_long( int, char * const [], const char *, const struct option *, int * );
-extern int getopt_long_only( int, char * const [], const char *, const struct option *, int * );
+extern int getopt_long(int, char *const[], const char *, const struct option *, int *);
+extern int getopt_long_only(int, char *const[], const char *, const struct option *, int *);
 
-#endif	/* _GETOPT_H */
+#endif /* _GETOPT_H */
 
 _END_C_DECLS
 
-#endif	/* !_GETOPT_H: $RCSfile: getopt.h,v $: end of file */
+#endif /* !_GETOPT_H: $RCSfile: getopt.h,v $: end of file */

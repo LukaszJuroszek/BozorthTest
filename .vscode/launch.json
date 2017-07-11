@@ -4,21 +4,21 @@
     {
         "type": "gdb",
         "request": "launch",
-        "name": "Launch Program",
+        "name": "Launch by gdb",
         "target": "./a.exe",
-        "arguments": "a2.xyt a0_2.xyt",
+        "arguments": "-v -l a2.xyt a0_2.xyt",
         "cwd": "${workspaceRoot}"
     },
         {
-            "name": "C++ Launch (Windows)",
+            "name": "C++ native ",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceRoot}/a.exe",
-            "args": ["a0.xyt","a0_2.xyt"],
+            "args": ["-v -l a2.xyt a0_2.xyt"],
             "stopAtEntry": true,
             "cwd": "${workspaceRoot}",
             "environment": [],
-            "externalConsole": true
+            "externalConsole": false
         },
         {
             "name": "C++ Attach (Windows)",

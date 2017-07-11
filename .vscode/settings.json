@@ -1,5 +1,11 @@
 {
     "files.associations": {
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "bozorth.h": "c",
+        "minwindef.h": "c",
+        "corecrt.h": "c",
+        "winnt.h": "c",
+        "wingdi.h": "c",
+        "stdio.h": "c"
     }
 }
