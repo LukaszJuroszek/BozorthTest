@@ -40,7 +40,6 @@ to hold the Government harmless from any claim arising from your use
 of the software.
 
 *******************************************************************************/
-
 #ifndef _BOZORTH_H
 #define _BOZORTH_H
 
@@ -187,7 +186,15 @@ struct cell
 /* In BZ_IO : Supports the loading and manipulation of XYT and XYTQ data */
 /**************************************************************************/
 #define MAX_FILE_MINUTIAE 1000 /* bz_load() */
-
+enum minType
+{
+	Undefined = 0,
+	Straight = 1,
+	Junction = 2
+};
+extern const char * minTypes[3];
+extern const char *getNameOfMinutiaeType(enum minType t);
+extern const enum minType getMinutiaeEnumTypeFromString(char *str);
 struct xyt_struct
 {
 	int nrows;
@@ -195,7 +202,6 @@ struct xyt_struct
 	int ycol[MAX_BOZORTH_MINUTIAE];
 	int thetacol[MAX_BOZORTH_MINUTIAE];
 };
-extern char *Types[3];
 struct xytq_struct
 {
 	int nrows;
@@ -204,44 +210,14 @@ struct xytq_struct
 	int thetacol[MAX_FILE_MINUTIAE];
 	int qualitycol[MAX_FILE_MINUTIAE];
 };
-enum minutiaeType
-{
-	Undefined,
-	Sraight,
-	junction
-};
-const char *minutiaeTypes[] = {"undefined", "sraight", "junction"};
-const char *getNameOfMinutiaeType(enum minutiaeType type)
-{
-	switch (type)
-	{
-	case Sraight:
-		return "sraight";
-	case Junction:
-		return "junction";
-	default:
-		return "undefined";
-	}
-}
-const char *getMinutiaeEnumTypeFromString(char* string)
-{
-	switch (string)
-	{
-	case "sraight":
-		return Sraight;
-	case "junction":
-		return Junction;
-	default:
-		return Undefined;
-	}
-}
+
 struct xytt_struct // new structure with type of minutae as int
 {
 	int nrows;
 	int xcol[MAX_BOZORTH_MINUTIAE];
 	int ycol[MAX_BOZORTH_MINUTIAE];
 	int thetacol[MAX_BOZORTH_MINUTIAE];
-	enum minutiaeType types[MAX_FILE_MINUTIAE];
+	enum minType types[MAX_FILE_MINUTIAE];
 };
 #define XYT_NULL ((struct xyt_struct *)NULL)   /* bz_load() */
 #define XYTQ_NULL ((struct xytq_struct *)NULL) /* bz_load() */
@@ -325,7 +301,7 @@ extern char *get_score_filename(const char *, const char *);
 extern char *get_score_line(const char *, const char *, int, int, const char *);
 
 extern struct xyt_struct *bz_load(const char *);
-extern struct xytt_struct *bz_load(const char *);
+extern struct xytt_struct *bz_load_type(const char *);
 extern int fd_readable(int);
 /* In: BZ_SORT.C */
 extern int sort_quality_decreasing(const void *, const void *);

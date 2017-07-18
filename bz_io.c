@@ -81,7 +81,30 @@ of the software.
 #include <string.h>
 #include <ctype.h>
 #include <sys/time.h>
-#include <bozorth.h>
+#include <stdlib.h>
+#include "include/bozorth.h"
+const char *minTypes[] = {"undefined", "straight", "junction"};
+const char *getNameOfMinutiaeType(enum minType t)
+{
+	switch (t)
+	{
+	case Straight:
+		return minTypes[t];
+	case Junction:
+		return minTypes[t];
+	default:
+		return minTypes[t];
+	}
+}
+ const enum minType getMinutiaeEnumTypeFromString(char *str)
+{
+	if (str == "straight")
+		return (enum minType)Straight;
+	else if (str == "junction")
+		return (enum minType)Junction;
+	else
+		return (enum minType)Undefined;
+}
 /***********************************************************************/
 int parse_line_range(const char *sb, int *begin, int *end)
 {
@@ -429,8 +452,94 @@ struct xyt_struct *bz_load(const char *xyt_file)
       }
       return xyt_s;
 }
-struct xytt_struct *bz_load(const char *xyt_file)
+struct xytt_struct *bz_load_type(const char *xytt_file)
 {
+      int nminutiae;
+      int m;
+      int i;
+      int nargs_expected;
+      FILE *fp;
+      struct xytt_struct *xytt_s;
+      int xvals_lng[MAX_FILE_MINUTIAE], /* Temporary lists to store all the minutaie from a file */
+          yvals_lng[MAX_FILE_MINUTIAE],
+          tvals_lng[MAX_FILE_MINUTIAE];
+      char *tpyes_lng[MAX_FILE_MINUTIAE];
+      char xytt_line[MAX_LINE_LENGTH];
+      /* This is now externally defined in bozorth.h */
+      /* extern FILE * errorfp; */
+      fp = fopen(xytt_file, "r");
+      if (fp == (FILE *)NULL)
+      {
+            fprintf(errorfp, "%s: ERROR: fopen() of minutiae file \"%s\" failed: %s\n",
+                    get_progname(), xytt_file, strerror(errno));
+            return XYT_NULL;
+      }
+      nminutiae = 0;
+      nargs_expected = 0;
+      //reading form file to tab[][]
+      while (fgets(xytt_line, sizeof xytt_line, fp) != CNULL)
+      {
+            //Funkcje odczytują dane zgodnie z podanym formatem opisanym
+            //to znaczy że odczytywany jest wiersz z pliku
+            m = sscanf(xytt_line, "%d %d %d %s",
+                       &xvals_lng[nminutiae],
+                       &yvals_lng[nminutiae],
+                       &tvals_lng[nminutiae],
+                       &tpyes_lng[nminutiae]);
+            if (nminutiae == 0)
+            { //checking for saved information
+                  if (m != 4)
+                  {
+                        fprintf(errorfp, "%s: ERROR: sscanf() failed on line %u in minutiae file \"%s\"\n",
+                                get_progname(), nminutiae + 1, xytt_file);
+                        return XYT_NULL;
+                  }
+                  nargs_expected = m;
+            }
+            else
+            {
+                  if (m != nargs_expected)
+                  {
+                        fprintf(errorfp, "%s: ERROR: inconsistent argument count on line %u of minutiae file \"%s\"\n",
+                                get_progname(), nminutiae + 1, xytt_file);
+                        return XYT_NULL;
+                  }
+            }
+            //checking for quality and if max file minutiae reach, break.
+            ++nminutiae;
+            if (nminutiae == MAX_FILE_MINUTIAE)
+                  break;
+      }
+      if (fclose(fp) != 0)
+      {
+            fprintf(errorfp, "%s: ERROR: fclose() of minutiae file \"%s\" failed: %s\n",
+                    get_progname(), xytt_file, strerror(errno));
+            return XYT_NULL;
+      }
+      xytt_s = (struct xytt_struct *)malloc(sizeof(struct xytt_struct));
+      if (xytt_s == ((struct xytt_struct *)NULL))
+      {
+            fprintf(errorfp, "%s: ERROR: malloc() failure while loading minutiae buffer failed: %s\n",
+                    get_progname(),
+                    strerror(errno));
+            return ((struct xytt_struct *)NULL);
+      }
+      //from m arrays[] to struct xytq
+      xytt_s->nrows = nminutiae;
+      for (i = 0; i < nminutiae; i++)
+      {
+            xytt_s->xcol[i] = xvals_lng[i];
+            xytt_s->ycol[i] = yvals_lng[i];
+            xytt_s->thetacol[i] = tvals_lng[i];
+            xytt_s->types[i] = getMinutiaeEnumTypeFromString(tpyes_lng[i]);
+      }
+      if (verbose_load)
+            fprintf(errorfp, "Loaded %s\n", xytt_file);
+      for (i = 0; i < nminutiae; i++)
+      {
+            printf("xvals_lng[i]=%d\n", xvals_lng[i]);
+      }
+      return xytt_s;
 }
 
 /************************************************************************

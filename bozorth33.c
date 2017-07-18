@@ -54,7 +54,7 @@ of the software.
 #include <sys/param.h>
 #include <getopt.h>
 #include <signal.h>
-#include <bozorth.h>
+#include "include/bozorth.h"
 #include <version.h>
 /* Default {x,y,t} representation is "NIST internal", not M1 */
 int m1_xyt = 0;
@@ -70,6 +70,7 @@ extern char *optarg;
 extern int optind, opterr, optopt;
 extern void usage(FILE *);
 extern void print_version(FILE *);
+
 /**********************************************************************************/
 int main(int argc, char **argv)
 {

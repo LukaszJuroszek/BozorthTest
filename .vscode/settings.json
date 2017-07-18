@@ -18,6 +18,7 @@
         "ddeml.h": "c",
         "string.h": "c",
         "corecrt_wstdio.h": "c",
-        "mmsyscom.h": "c"
+        "mmsyscom.h": "c",
+        "stdlib.h": "c"
     }
 }
