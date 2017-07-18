@@ -56,9 +56,6 @@ of the software.
 #include <signal.h>
 #include <bozorth.h>
 #include <version.h>
-//global type array
-char *Types[3] = { "none", "straight", "juncion" };
-
 /* Default {x,y,t} representation is "NIST internal", not M1 */
 int m1_xyt = 0;
 int max_minutiae = DEFAULT_BOZORTH_MINUTIAE;
