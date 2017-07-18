@@ -429,100 +429,10 @@ struct xyt_struct *bz_load(const char *xyt_file)
       }
       return xyt_s;
 }
-struct xyt_struct *bz_load(const char *xyt_file)
+struct xytt_struct *bz_load(const char *xyt_file)
 {
-      int nminutiae;
-      int m;
-      int i;
-      int nargs_expected;
-      FILE *fp;
-      struct xyt_struct *xyt_s;
-      struct xytq_struct *xytq_s;
-      int xvals_lng[MAX_FILE_MINUTIAE], /* Temporary lists to store all the minutaie from a file */
-          yvals_lng[MAX_FILE_MINUTIAE],
-          tvals_lng[MAX_FILE_MINUTIAE],
-          qvals_lng[MAX_FILE_MINUTIAE];
-      char xyt_line[MAX_LINE_LENGTH];
-      /* This is now externally defined in bozorth.h */
-      /* extern FILE * errorfp; */
-      fp = fopen(xyt_file, "r");
-      if (fp == (FILE *)NULL)
-      {
-            fprintf(errorfp, "%s: ERROR: fopen() of minutiae file \"%s\" failed: %s\n",
-                    get_progname(), xyt_file, strerror(errno));
-            return XYT_NULL;
-      }
-      nminutiae = 0;
-      nargs_expected = 0;
-      //reading form file to tab[][]
-      while (fgets(xyt_line, sizeof xyt_line, fp) != CNULL)
-      {
-            //Funkcje odczytują dane zgodnie z podanym formatem opisanym
-            //to znaczy że odczytywany jest wiersz z pliku
-            m = sscanf(xyt_line, "%d %d %d %d",
-                       &xvals_lng[nminutiae],
-                       &yvals_lng[nminutiae],
-                       &tvals_lng[nminutiae],
-                       &qvals_lng[nminutiae]);
-            if (nminutiae == 0)
-            { //checking for saved information
-                  if (m != 3 && m != 4)
-                  {
-                        fprintf(errorfp, "%s: ERROR: sscanf() failed on line %u in minutiae file \"%s\"\n",
-                                get_progname(), nminutiae + 1, xyt_file);
-                        return XYT_NULL;
-                  }
-                  nargs_expected = m;
-            }
-            else
-            {
-                  if (m != nargs_expected)
-                  {
-                        fprintf(errorfp, "%s: ERROR: inconsistent argument count on line %u of minutiae file \"%s\"\n",
-                                get_progname(), nminutiae + 1, xyt_file);
-                        return XYT_NULL;
-                  }
-            }
-            //checking for quality and if max file minutiae reach, break.
-            if (m == 3)
-                  qvals_lng[nminutiae] = 1;
-            ++nminutiae;
-            if (nminutiae == MAX_FILE_MINUTIAE)
-                  break;
-      }
-      if (fclose(fp) != 0)
-      {
-            fprintf(errorfp, "%s: ERROR: fclose() of minutiae file \"%s\" failed: %s\n",
-                    get_progname(), xyt_file, strerror(errno));
-            return XYT_NULL;
-      }
-      xytq_s = (struct xytq_struct *)malloc(sizeof(struct xytq_struct));
-      if (xytq_s == XYTQ_NULL)
-      {
-            fprintf(errorfp, "%s: ERROR: malloc() failure while loading minutiae buffer failed: %s\n",
-                    get_progname(),
-                    strerror(errno));
-            return XYT_NULL;
-      }
-      //from m array[][] to struct xytq
-      xytq_s->nrows = nminutiae;
-      for (i = 0; i < nminutiae; i++)
-      {
-            xytq_s->xcol[i] = xvals_lng[i];
-            xytq_s->ycol[i] = yvals_lng[i];
-            xytq_s->thetacol[i] = tvals_lng[i];
-            xytq_s->qualitycol[i] = qvals_lng[i];
-      }
-      xyt_s = (xytq_s, 0);
-      if (verbose_load)
-            fprintf(errorfp, "Loaded %s\n", xyt_file);
-      printf("jest\n");
-      for (i = 0; i < nminutiae; i++)
-      {
-            printf("xvals_lng[i]=%d\n", xvals_lng[i]);
-      }
-      return xyt_s;
 }
+
 /************************************************************************
 Load a XYTQ structure and return a XYT struct. 
 Row 3's value is an angle which is normalized to the interval (-180,180].
