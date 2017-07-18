@@ -6,6 +6,18 @@
         "corecrt.h": "c",
         "winnt.h": "c",
         "wingdi.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "math.h": "c",
+        "objidl.h": "c",
+        "objidlbase.h": "c",
+        "winuser.h": "c",
+        "wincrypt.h": "c",
+        "crtdbg.h": "c",
+        "getopt.h": "c",
+        "winerror.h": "c",
+        "ddeml.h": "c",
+        "string.h": "c",
+        "corecrt_wstdio.h": "c",
+        "mmsyscom.h": "c"
     }
 }

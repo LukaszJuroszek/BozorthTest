@@ -56,6 +56,9 @@ of the software.
 #include <signal.h>
 #include <bozorth.h>
 #include <version.h>
+//global type array
+char *Types[3] = { "none", "straight", "juncion" };
+
 /* Default {x,y,t} representation is "NIST internal", not M1 */
 int m1_xyt = 0;
 int max_minutiae = DEFAULT_BOZORTH_MINUTIAE;
@@ -798,7 +801,7 @@ int main(int argc, char **argv)
 		/* successfully loaded probe and gallery data */
 		set_probe_filename(p);
 		set_gallery_filename(g);
-		if (ok)
+		if (ok)//checking witch way to checking bozorth is. probe to galery or probe../
 		{
 			if (fixed_probe_file != CNULL)
 			{
@@ -948,7 +951,7 @@ int main(int argc, char **argv)
 		}
 		/* All match scores have now been printed, regardless of whether they were printed after */
 		/*	every computation, or stored for printing at the end */
-		if (fflush(outfp) != 0)
+ 		if (fflush(outfp) != 0)
 		{
 			fprintf(errorfp, "%s: ERROR: fflush() of the match scores failed: %s",
 					get_progname(), strerror(errno));
