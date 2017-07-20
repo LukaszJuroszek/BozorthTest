@@ -86,24 +86,24 @@ of the software.
 const char *minTypes[] = {"undefined", "straight", "junction"};
 const char *getNameOfMinutiaeType(enum minType t)
 {
-	switch (t)
-	{
-	case Straight:
-		return minTypes[t];
-	case Junction:
-		return minTypes[t];
-	default:
-		return minTypes[t];
-	}
+      switch (t)
+      {
+      case Straight:
+            return minTypes[t];
+      case Junction:
+            return minTypes[t];
+      default:
+            return minTypes[t];
+      }
 }
- const enum minType getMinutiaeEnumTypeFromString(char *str)
+const enum minType getMinutiaeEnumTypeFromString(char *str)
 {
-	if (str == "straight")
-		return (enum minType)Straight;
-	else if (str == "junction")
-		return (enum minType)Junction;
-	else
-		return (enum minType)Undefined;
+      if (str == "straight")
+            return (enum minType)Straight;
+      else if (str == "junction")
+            return (enum minType)Junction;
+      else
+            return (enum minType)Undefined;
 }
 /***********************************************************************/
 int parse_line_range(const char *sb, int *begin, int *end)
@@ -442,14 +442,10 @@ struct xyt_struct *bz_load(const char *xyt_file)
             xytq_s->thetacol[i] = tvals_lng[i];
             xytq_s->qualitycol[i] = qvals_lng[i];
       }
-      xyt_s = (xytq_s, 0);
+      xyt_s = bz_prune(xytq_s, 0);
       if (verbose_load)
             fprintf(errorfp, "Loaded %s\n", xyt_file);
-      printf("jest\n");
-      for (i = 0; i < nminutiae; i++)
-      {
-            printf("xvals_lng[i]=%d\n", xvals_lng[i]);
-      }
+
       return xyt_s;
 }
 struct xytt_struct *bz_load_type(const char *xytt_file)
@@ -462,7 +458,8 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
       struct xytt_struct *xytt_s;
       int xvals_lng[MAX_FILE_MINUTIAE], /* Temporary lists to store all the minutaie from a file */
           yvals_lng[MAX_FILE_MINUTIAE],
-          tvals_lng[MAX_FILE_MINUTIAE];
+          tvals_lng[MAX_FILE_MINUTIAE],
+          qvals_lng[MAX_FILE_MINUTIAE];
       char *tpyes_lng[MAX_FILE_MINUTIAE];
       char xytt_line[MAX_LINE_LENGTH];
       /* This is now externally defined in bozorth.h */

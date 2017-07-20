@@ -6,7 +6,7 @@
         "request": "launch",
         "name": "Launch by gdb",
         "target": "./a.exe",
-        "arguments": "-v -l a2.xyt a0_2.xyt",
+        "arguments": "-v a0_2.xyt a0.xyt",
         "cwd": "${workspaceRoot}"
     },
         {
@@ -14,7 +14,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceRoot}/a.exe",
-            "args": ["-v -l a2.xyt a0_2.xyt"],
+            "args": ["-v a0.xyt a0_2.xyt"],
             "stopAtEntry": true,
             "cwd": "${workspaceRoot}",
             "environment": [],

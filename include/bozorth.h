@@ -217,6 +217,7 @@ struct xytt_struct // new structure with type of minutae as int
 	int xcol[MAX_BOZORTH_MINUTIAE];
 	int ycol[MAX_BOZORTH_MINUTIAE];
 	int thetacol[MAX_BOZORTH_MINUTIAE];
+	int qualitycol[MAX_FILE_MINUTIAE];
 	enum minType types[MAX_FILE_MINUTIAE];
 };
 #define XYT_NULL ((struct xyt_struct *)NULL)   /* bz_load() */
@@ -300,6 +301,7 @@ extern char *get_next_file(char *, FILE *, FILE *, int *, int *, char *,
 extern char *get_score_filename(const char *, const char *);
 extern char *get_score_line(const char *, const char *, int, int, const char *);
 
+extern struct xyt_struct *bz_prune(struct xytq_struct *, int);
 extern struct xyt_struct *bz_load(const char *);
 extern struct xytt_struct *bz_load_type(const char *);
 extern int fd_readable(int);

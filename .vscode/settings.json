@@ -19,6 +19,7 @@
         "string.h": "c",
         "corecrt_wstdio.h": "c",
         "mmsyscom.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "winsvc.h": "c"
     }
 }
