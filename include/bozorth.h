@@ -229,7 +229,7 @@ struct xytq_struct
 #define XYT_NULL ((struct xyt_struct *)NULL)   /* bz_load() */
 #define XYTQ_NULL ((struct xytq_struct *)NULL) /* bz_load() */
 //New
-struct
+struct minutiae_struct_type
 {
 	int col[4];
 	char *colType;
@@ -238,11 +238,11 @@ extern const char *minTypes[3];
 extern const char *getNameOfMinutiaeType(enum minType t);
 extern const enum minType getMinutiaeEnumTypeFromString(char *str);
 extern struct xytt_struct *bz_load_type(const char *);
-extern struct xytt_struct *bz_prune_type(struct xytqt_struct *xytqt_s, int verbose_load);
+extern struct xytt_struct *bz_prune_type(struct xytqt_struct *xytqt_input, int verbose_load);
 extern void printXytStruct(struct xyt_struct *value);
 extern void printXytqStruct(struct xytq_struct *value);
 extern void printXyttStruct(struct xytt_struct *value);
-extern void printXyttStruct(struct xytqt_struct *value);
+extern void printXytqtStruct(struct xytqt_struct *value);
 
 #define XYTT_NULL ((struct xytt_struct *)NULL) /* new type null (xytt)*/
 /**************************************************************************/

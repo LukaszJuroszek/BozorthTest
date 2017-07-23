@@ -120,6 +120,7 @@ int main(int argc, char **argv)
 	int line_count;
 	char **lines = (char **)NULL;
 	struct xyt_struct *pstruct = XYT_NULL;
+	struct xytt_struct *pTstruct = ((struct xytt_struct *)NULL);
 	struct xyt_struct *gstruct = XYT_NULL;
 	int probe_len = 0; /* set and used only with a fixed_probe_file */
 	int pline_begin = -1;
@@ -773,6 +774,7 @@ int main(int argc, char **argv)
 		if (fixed_probe_file == CNULL)
 		{ /* unless probe file is fixed, load next probe file */
 			pstruct = bz_load(p);
+			pTstruct = bz_load_type(p);
 			if (pstruct == XYT_NULL)
 			{
 				++nerrors;

@@ -121,7 +121,7 @@ void printXyttStruct(struct xytt_struct *value)
       }
       printf("%s\n", "END");
 }
-void printXyttStruct(struct xytqt_struct *value)
+void printXytqtStruct(struct xytqt_struct *value)
 {
       printf("%s\n", "xytQt");
       for (int i = 0; i < value->nrows; i++)
@@ -140,7 +140,8 @@ const char *getNameOfMinutiaeType(enum minType t)
 {
       switch (t)
       {
-            ` case Straight : return minTypes[t];
+      case Straight:
+            return minTypes[t];
       case Junction:
             return minTypes[t];
       default:
@@ -515,8 +516,8 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
           yvals_lng[MAX_FILE_MINUTIAE],
           tvals_lng[MAX_FILE_MINUTIAE],
           qvals_lng[MAX_FILE_MINUTIAE];
-      char *typesvals_lng[MAX_FILE_MINUTIAE],
-          char xytt_line[MAX_LINE_LENGTH];
+      char *typesvals_lng[MAX_FILE_MINUTIAE];
+      char xytt_line[MAX_LINE_LENGTH];
       /* This is now externally defined in bozorth.h */
       /* extern FILE * errorfp; */
       fp = fopen(xytt_file, "r");
@@ -753,7 +754,7 @@ struct xyt_struct *bz_prune(struct xytq_struct *xytq_s, int verbose_load)
       xyt_s->nrows = nminutiae;
       return xyt_s;
 }
-struct xytt_struct *bz_prune_type(struct xytt_struct *xytt_input, int verbose_load)
+struct xytt_struct *bz_prune_type(struct xytqt_struct *xytqt_input, int verbose_load)
 {
       int nminutiae;
       int index;
@@ -781,17 +782,17 @@ struct xytt_struct *bz_prune_type(struct xytt_struct *xytt_input, int verbose_lo
 #define C1 0
 #define C2 1
       int i;
-      nminutiae = xytts->nrows;
+      nminutiae = xytqt_input->nrows;
       for (i = 0; i < nminutiae; i++)
       {
-            xvals_lng[i] = xytt_input->xcol[i];
-            yvals_lng[i] = xytt_input->ycol[i];
-            qvals_lng[i] = xytt_input->qualitycol[i];
-            type_lng[i] = xytt_input->getNameOfMinutiaeType(minTypecol[i]);
-            if (xytt_input->thetacol[i] > 180)
-                  tvals_lng[i] = xytt_input->thetacol[i] - 360;
+            xvals_lng[i] = xytqt_input->xcol[i];
+            yvals_lng[i] = xytqt_input->ycol[i];
+            qvals_lng[i] = xytqt_input->qualitycol[i];
+            type_lng[i] = getNameOfMinutiaeType(xytqt_input->typecol[i]);
+            if (xytqt_input->thetacol[i] > 180)
+                  tvals_lng[i] = xytqt_input->thetacol[i] - 360;
             else
-                  tvals_lng[i] = xytt_input->thetacol[i];
+                  tvals_lng[i] = xytqt_input->thetacol[i];
       }
       if (nminutiae > max_minutiae)
       {
@@ -803,7 +804,7 @@ struct xytt_struct *bz_prune_type(struct xytt_struct *xytt_input, int verbose_lo
             if (sort_order_decreasing(qvals_lng, nminutiae, order))
             {
                   fprintf(errorfp, "%s: ERROR: sort failed and returned on error\n", get_progname());
-                  return XYT_NULL;
+                  return NULL;
             }
             for (j = 0; j < nminutiae; j++)
             {
@@ -816,7 +817,7 @@ struct xytt_struct *bz_prune_type(struct xytt_struct *xytt_input, int verbose_lo
                   {
                         fprintf(errorfp, "%s: ERROR: sort failed: j=%d; qvals_lng[%d] > qvals_lng[%d]\n",
                                 get_progname(), j, order[j], order[j - 1]);
-                        return XYT_NULL;
+                        return NULL;
                   }
             }
             if (verbose_load)
@@ -845,7 +846,7 @@ struct xytt_struct *bz_prune_type(struct xytt_struct *xytt_input, int verbose_lo
                         {
                               fprintf(errorfp, "%s: ERROR: sort failed: c[%d].col[3] > c[%d].col[3]\n",
                                       get_progname(), j, j - 1);
-                              return XYT_NULL;
+                              return NULL;
                         }
                   }
             }
@@ -864,7 +865,7 @@ struct xytt_struct *bz_prune_type(struct xytt_struct *xytt_input, int verbose_lo
             yptr = yvals_lng;
             tptr = tvals_lng;
             qptr = qvals_lng;
-            typetr = tpyes_lng;
+            typetr = type_lng;
       }
       for (j = 0; j < nminutiae; j++)
       {
