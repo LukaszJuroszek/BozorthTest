@@ -186,15 +186,31 @@ struct cell
 /* In BZ_IO : Supports the loading and manipulation of XYT and XYTQ data */
 /**************************************************************************/
 #define MAX_FILE_MINUTIAE 1000 /* bz_load() */
+//New
 enum minType
 {
 	Undefined = 0,
 	Straight = 1,
 	Junction = 2
 };
-extern const char * minTypes[3];
-extern const char *getNameOfMinutiaeType(enum minType t);
-extern const enum minType getMinutiaeEnumTypeFromString(char *str);
+//New struct
+struct xytqt_struct
+{
+	int nrows;
+	int xcol[MAX_BOZORTH_MINUTIAE];
+	int ycol[MAX_BOZORTH_MINUTIAE];
+	int thetacol[MAX_BOZORTH_MINUTIAE];
+	int qualitycol[MAX_FILE_MINUTIAE];
+	enum minType typecol[MAX_FILE_MINUTIAE];
+};
+struct xytt_struct
+{
+	int nrows;
+	int xcol[MAX_BOZORTH_MINUTIAE];
+	int ycol[MAX_BOZORTH_MINUTIAE];
+	int thetacol[MAX_BOZORTH_MINUTIAE];
+	enum minType typecol[MAX_FILE_MINUTIAE];
+};
 struct xyt_struct
 {
 	int nrows;
@@ -210,20 +226,25 @@ struct xytq_struct
 	int thetacol[MAX_FILE_MINUTIAE];
 	int qualitycol[MAX_FILE_MINUTIAE];
 };
-
-struct xytt_struct // new structure with type of minutae as int
-{
-	int nrows;
-	int xcol[MAX_BOZORTH_MINUTIAE];
-	int ycol[MAX_BOZORTH_MINUTIAE];
-	int thetacol[MAX_BOZORTH_MINUTIAE];
-	int qualitycol[MAX_FILE_MINUTIAE];
-	enum minType types[MAX_FILE_MINUTIAE];
-};
 #define XYT_NULL ((struct xyt_struct *)NULL)   /* bz_load() */
 #define XYTQ_NULL ((struct xytq_struct *)NULL) /* bz_load() */
-#define XYTT_NULL ((struct xytt_struct *)NULL) /* new type null (xytt)*/
+//New
+struct
+{
+	int col[4];
+	char *colType;
+};
+extern const char *minTypes[3];
+extern const char *getNameOfMinutiaeType(enum minType t);
+extern const enum minType getMinutiaeEnumTypeFromString(char *str);
+extern struct xytt_struct *bz_load_type(const char *);
+extern struct xytt_struct *bz_prune_type(struct xytqt_struct *xytqt_s, int verbose_load);
+extern void printXytStruct(struct xyt_struct *value);
+extern void printXytqStruct(struct xytq_struct *value);
+extern void printXyttStruct(struct xytt_struct *value);
+extern void printXyttStruct(struct xytqt_struct *value);
 
+#define XYTT_NULL ((struct xytt_struct *)NULL) /* new type null (xytt)*/
 /**************************************************************************/
 /**************************************************************************/
 /* GLOBAL VARIABLES */
@@ -303,7 +324,6 @@ extern char *get_score_line(const char *, const char *, int, int, const char *);
 
 extern struct xyt_struct *bz_prune(struct xytq_struct *, int);
 extern struct xyt_struct *bz_load(const char *);
-extern struct xytt_struct *bz_load_type(const char *);
 extern int fd_readable(int);
 /* In: BZ_SORT.C */
 extern int sort_quality_decreasing(const void *, const void *);

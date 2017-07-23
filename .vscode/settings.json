@@ -20,6 +20,11 @@
         "corecrt_wstdio.h": "c",
         "mmsyscom.h": "c",
         "stdlib.h": "c",
-        "winsvc.h": "c"
+        "winsvc.h": "c",
+        "corecrt_search.h": "c",
+        "no_sal2.h": "c",
+        "sal.h": "c",
+        "winspool.h": "c",
+        "corecrt_io.h": "c"
     }
 }

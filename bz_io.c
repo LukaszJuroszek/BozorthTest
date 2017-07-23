@@ -83,13 +83,64 @@ of the software.
 #include <sys/time.h>
 #include <stdlib.h>
 #include "include/bozorth.h"
+void printXytStruct(struct xyt_struct *value)
+{
+      printf("%s\n", "xyt");
+      for (int i = 0; i < value->nrows; i++)
+      {
+            printf("[%d]={ ", i);
+            printf("%d, ", value->xcol[i]);
+            printf("%d, ", value->ycol[i]);
+            printf("%d }\n", value->thetacol[i]);
+      }
+      printf("%s\n", "END");
+}
+void printXytqStruct(struct xytq_struct *value)
+{
+      printf("%s\n", "xytQ");
+      for (int i = 0; i < value->nrows; i++)
+      {
+            printf("[%d]={ ", i);
+            printf("%d, ", value->xcol[i]);
+            printf("%d, ", value->ycol[i]);
+            printf("%d, ", value->thetacol[i]);
+            printf("%d }\n", value->qualitycol[i]);
+      }
+      printf("%s\n", "END");
+}
+void printXyttStruct(struct xytt_struct *value)
+{
+      printf("%s\n", "xytT");
+      for (int i = 0; i < value->nrows; i++)
+      {
+            printf("[%d]={ ", i);
+            printf("%d, ", value->xcol[i]);
+            printf("%d, ", value->ycol[i]);
+            printf("%d, ", value->thetacol[i]);
+            printf("%s }\n", getNameOfMinutiaeType(value->typecol[i]));
+      }
+      printf("%s\n", "END");
+}
+void printXyttStruct(struct xytqt_struct *value)
+{
+      printf("%s\n", "xytQt");
+      for (int i = 0; i < value->nrows; i++)
+      {
+            printf("[%d]={ ", i);
+            printf("%d, ", value->xcol[i]);
+            printf("%d, ", value->ycol[i]);
+            printf("%d, ", value->thetacol[i]);
+            printf("%d, ", value->qualitycol[i]);
+            printf("%s }\n", getNameOfMinutiaeType(value->typecol[i]));
+      }
+      printf("%s\n", "END");
+}
 const char *minTypes[] = {"undefined", "straight", "junction"};
 const char *getNameOfMinutiaeType(enum minType t)
 {
       switch (t)
       {
-      case Straight:
-            return minTypes[t];
+            ` case Straight : return minTypes[t];
       case Junction:
             return minTypes[t];
       default:
@@ -357,7 +408,6 @@ A maximum of MAX_BOZORTH_MINUTIAE minutiae can be returned -- fewer if
 "max_minutiae" is smaller.  If the file contains more minutiae than are
 to be returned, the highest-quality minutiae are returned.
 *************************************************************************/
-/***********************************************************************/
 struct xyt_struct *bz_load(const char *xyt_file)
 {
       int nminutiae;
@@ -442,12 +492,16 @@ struct xyt_struct *bz_load(const char *xyt_file)
             xytq_s->thetacol[i] = tvals_lng[i];
             xytq_s->qualitycol[i] = qvals_lng[i];
       }
+      printXytqStruct(xytq_s);
       xyt_s = bz_prune(xytq_s, 0);
+      printXytStruct(xyt_s);
       if (verbose_load)
             fprintf(errorfp, "Loaded %s\n", xyt_file);
-
       return xyt_s;
 }
+/*This method take xytqt file, and throws error if can read 5 values from file,
+so quality row is required, returns xytt struct. Sorts rows in file, and take best
+quality minutiae*/
 struct xytt_struct *bz_load_type(const char *xytt_file)
 {
       int nminutiae;
@@ -456,12 +510,13 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
       int nargs_expected;
       FILE *fp;
       struct xytt_struct *xytt_s;
-      int xvals_lng[MAX_FILE_MINUTIAE], /* Temporary lists to store all the minutaie from a file */
+      struct xytqt_struct *xytqt_s;
+      int xvals_lng[MAX_FILE_MINUTIAE],
           yvals_lng[MAX_FILE_MINUTIAE],
           tvals_lng[MAX_FILE_MINUTIAE],
           qvals_lng[MAX_FILE_MINUTIAE];
-      char *tpyes_lng[MAX_FILE_MINUTIAE];
-      char xytt_line[MAX_LINE_LENGTH];
+      char *typesvals_lng[MAX_FILE_MINUTIAE],
+          char xytt_line[MAX_LINE_LENGTH];
       /* This is now externally defined in bozorth.h */
       /* extern FILE * errorfp; */
       fp = fopen(xytt_file, "r");
@@ -469,7 +524,7 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
       {
             fprintf(errorfp, "%s: ERROR: fopen() of minutiae file \"%s\" failed: %s\n",
                     get_progname(), xytt_file, strerror(errno));
-            return XYT_NULL;
+            return NULL;
       }
       nminutiae = 0;
       nargs_expected = 0;
@@ -478,18 +533,19 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
       {
             //Funkcje odczytują dane zgodnie z podanym formatem opisanym
             //to znaczy że odczytywany jest wiersz z pliku
-            m = sscanf(xytt_line, "%d %d %d %s",
+            m = sscanf(xytt_line, "%d %d %d %d %s",
                        &xvals_lng[nminutiae],
                        &yvals_lng[nminutiae],
                        &tvals_lng[nminutiae],
-                       &tpyes_lng[nminutiae]);
+                       &qvals_lng[nminutiae],
+                       &typesvals_lng[MAX_FILE_MINUTIAE]);
             if (nminutiae == 0)
             { //checking for saved information
-                  if (m != 4)
+                  if (m != 5)
                   {
                         fprintf(errorfp, "%s: ERROR: sscanf() failed on line %u in minutiae file \"%s\"\n",
                                 get_progname(), nminutiae + 1, xytt_file);
-                        return XYT_NULL;
+                        return NULL;
                   }
                   nargs_expected = m;
             }
@@ -499,10 +555,9 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
                   {
                         fprintf(errorfp, "%s: ERROR: inconsistent argument count on line %u of minutiae file \"%s\"\n",
                                 get_progname(), nminutiae + 1, xytt_file);
-                        return XYT_NULL;
+                        return NULL;
                   }
             }
-            //checking for quality and if max file minutiae reach, break.
             ++nminutiae;
             if (nminutiae == MAX_FILE_MINUTIAE)
                   break;
@@ -511,31 +566,28 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
       {
             fprintf(errorfp, "%s: ERROR: fclose() of minutiae file \"%s\" failed: %s\n",
                     get_progname(), xytt_file, strerror(errno));
-            return XYT_NULL;
+            return NULL;
       }
-      xytt_s = (struct xytt_struct *)malloc(sizeof(struct xytt_struct));
-      if (xytt_s == ((struct xytt_struct *)NULL))
+      xytqt_s = (struct xytqt_struct *)malloc(sizeof(struct xytqt_struct));
+      if (xytqt_s == ((struct xytqt_struct *)NULL))
       {
             fprintf(errorfp, "%s: ERROR: malloc() failure while loading minutiae buffer failed: %s\n",
                     get_progname(),
                     strerror(errno));
-            return ((struct xytt_struct *)NULL);
+            return NULL;
       }
-      //from m arrays[] to struct xytq
-      xytt_s->nrows = nminutiae;
+      xytqt_s->nrows = nminutiae;
       for (i = 0; i < nminutiae; i++)
       {
-            xytt_s->xcol[i] = xvals_lng[i];
-            xytt_s->ycol[i] = yvals_lng[i];
-            xytt_s->thetacol[i] = tvals_lng[i];
-            xytt_s->types[i] = getMinutiaeEnumTypeFromString(tpyes_lng[i]);
+            xytqt_s->xcol[i] = xvals_lng[i];
+            xytqt_s->ycol[i] = yvals_lng[i];
+            xytqt_s->thetacol[i] = tvals_lng[i];
+            xytqt_s->qualitycol[i] = qvals_lng[i];
+            xytqt_s->typecol[i] = getMinutiaeEnumTypeFromString(typesvals_lng[i]);
       }
+      xytt_s = bz_prune_type(xytqt_s, 0);
       if (verbose_load)
             fprintf(errorfp, "Loaded %s\n", xytt_file);
-      for (i = 0; i < nminutiae; i++)
-      {
-            printf("xvals_lng[i]=%d\n", xvals_lng[i]);
-      }
       return xytt_s;
 }
 
@@ -700,6 +752,170 @@ struct xyt_struct *bz_prune(struct xytq_struct *xytq_s, int verbose_load)
       }
       xyt_s->nrows = nminutiae;
       return xyt_s;
+}
+struct xytt_struct *bz_prune_type(struct xytt_struct *xytt_input, int verbose_load)
+{
+      int nminutiae;
+      int index;
+      int j;
+      int m;
+      struct xytt_struct *xyttS;
+      int *xptr;
+      int *yptr;
+      int *tptr;
+      int *qptr;
+      char **typetr;
+      struct minutiae_struct_type c[MAX_FILE_MINUTIAE];
+      int xvals_lng[MAX_FILE_MINUTIAE],
+          yvals_lng[MAX_FILE_MINUTIAE],
+          tvals_lng[MAX_FILE_MINUTIAE],
+          qvals_lng[MAX_FILE_MINUTIAE];
+      char *type_lng[MAX_FILE_MINUTIAE];
+      int order[MAX_FILE_MINUTIAE];
+      int xvals[MAX_BOZORTH_MINUTIAE],
+          yvals[MAX_BOZORTH_MINUTIAE],
+          tvals[MAX_BOZORTH_MINUTIAE],
+          qvals[MAX_BOZORTH_MINUTIAE];
+      char *typevals[MAX_FILE_MINUTIAE];
+      char xytt_line[MAX_LINE_LENGTH];
+#define C1 0
+#define C2 1
+      int i;
+      nminutiae = xytts->nrows;
+      for (i = 0; i < nminutiae; i++)
+      {
+            xvals_lng[i] = xytt_input->xcol[i];
+            yvals_lng[i] = xytt_input->ycol[i];
+            qvals_lng[i] = xytt_input->qualitycol[i];
+            type_lng[i] = xytt_input->getNameOfMinutiaeType(minTypecol[i]);
+            if (xytt_input->thetacol[i] > 180)
+                  tvals_lng[i] = xytt_input->thetacol[i] - 360;
+            else
+                  tvals_lng[i] = xytt_input->thetacol[i];
+      }
+      if (nminutiae > max_minutiae)
+      {
+            if (verbose_load)
+                  fprintf(errorfp, "%s: WARNING: bz_prune(): trimming minutiae to the %d of highest quality\n",
+                          get_progname(), max_minutiae);
+            if (verbose_load)
+                  fprintf(errorfp, "Before quality sort:\n");
+            if (sort_order_decreasing(qvals_lng, nminutiae, order))
+            {
+                  fprintf(errorfp, "%s: ERROR: sort failed and returned on error\n", get_progname());
+                  return XYT_NULL;
+            }
+            for (j = 0; j < nminutiae; j++)
+            {
+                  if (verbose_load)
+                        fprintf(errorfp, "   %3d: %3d %3d %3d ---> order = %3d\n",
+                                j, xvals_lng[j], yvals_lng[j], qvals_lng[j], order[j]);
+                  if (j == 0)
+                        continue;
+                  if (qvals_lng[order[j]] > qvals_lng[order[j - 1]])
+                  {
+                        fprintf(errorfp, "%s: ERROR: sort failed: j=%d; qvals_lng[%d] > qvals_lng[%d]\n",
+                                get_progname(), j, order[j], order[j - 1]);
+                        return XYT_NULL;
+                  }
+            }
+            if (verbose_load)
+                  fprintf(errorfp, "\nAfter quality sort:\n");
+            for (j = 0; j < max_minutiae; j++)
+            {
+                  xvals[j] = xvals_lng[order[j]];
+                  yvals[j] = yvals_lng[order[j]];
+                  tvals[j] = tvals_lng[order[j]];
+                  qvals[j] = qvals_lng[order[j]];
+                  typevals[j] = type_lng[order[j]];
+                  if (verbose_load)
+                        fprintf(errorfp, "   %3d: %3d %3d %3d\n", j, xvals[j], yvals[j], qvals[j]);
+            }
+            if (C1)
+            {
+                  if (verbose_load)
+                        fprintf(errorfp, "\nAfter qsort():\n");
+                  qsort((void *)&c, (size_t)nminutiae, sizeof(struct minutiae_struct_type), sort_quality_decreasing);
+                  for (j = 0; j < nminutiae; j++)
+                  {
+                        if (verbose_load)
+                              fprintf(errorfp, "Q  %3d: %3d %3d %3d\n",
+                                      j, c[j].col[0], c[j].col[1], c[j].col[3]);
+                        if (j > 0 && c[j].col[3] > c[j - 1].col[3])
+                        {
+                              fprintf(errorfp, "%s: ERROR: sort failed: c[%d].col[3] > c[%d].col[3]\n",
+                                      get_progname(), j, j - 1);
+                              return XYT_NULL;
+                        }
+                  }
+            }
+            if (verbose_load)
+                  fprintf(errorfp, "\n");
+            xptr = xvals;
+            yptr = yvals;
+            tptr = tvals;
+            qptr = qvals;
+            typetr = typevals;
+            nminutiae = max_minutiae;
+      }
+      else
+      {
+            xptr = xvals_lng;
+            yptr = yvals_lng;
+            tptr = tvals_lng;
+            qptr = qvals_lng;
+            typetr = tpyes_lng;
+      }
+      for (j = 0; j < nminutiae; j++)
+      {
+            c[j].col[0] = xptr[j];
+            c[j].col[1] = yptr[j];
+            c[j].col[2] = tptr[j];
+            c[j].col[3] = qptr[j];
+            c[j].colType[0] = typetr[j];
+      }
+      qsort((void *)&c, (size_t)nminutiae, sizeof(struct minutiae_struct_type), sort_x_y);
+      if (verbose_load)
+      {
+            fprintf(errorfp, "\nSorted on increasing x, then increasing y\n");
+            for (j = 0; j < nminutiae; j++)
+            {
+                  fprintf(errorfp, "%d : %3d, %3d, %3d, %3d\n", j, c[j].col[0], c[j].col[1], c[j].col[2], c[j].col[3]);
+                  if (j > 0)
+                  {
+                        if (c[j].col[0] < c[j - 1].col[0])
+                        {
+                              fprintf(errorfp, "%s: ERROR: sort failed: c[%d].col[0]=%d > c[%d].col[0]=%d\n",
+                                      get_progname(),
+                                      j, c[j].col[0], j - 1, c[j - 1].col[0]);
+                              return XYT_NULL;
+                        }
+                        if (c[j].col[0] == c[j - 1].col[0] && c[j].col[1] < c[j - 1].col[1])
+                        {
+                              fprintf(errorfp, "%s: ERROR: sort failed: c[%d].col[0]=%d == c[%d].col[0]=%d; c[%d].col[0]=%d == c[%d].col[0]=%d\n",
+                                      get_progname(),
+                                      j, c[j].col[0], j - 1, c[j - 1].col[0],
+                                      j, c[j].col[1], j - 1, c[j - 1].col[1]);
+                              return XYT_NULL;
+                        }
+                  }
+            }
+      }
+      xyttS = (struct xytt_struct *)malloc(sizeof(struct xytt_struct));
+      if (xyttS == ((struct xytt_struct *)NULL))
+      {
+            fprintf(errorfp, "ERROR: malloc() failure of xyt_struct.");
+            return NULL;
+      }
+      for (j = 0; j < nminutiae; j++)
+      {
+            xyttS->xcol[j] = c[j].col[0];
+            xyttS->ycol[j] = c[j].col[1];
+            xyttS->thetacol[j] = c[j].col[2];
+            xyttS->typecol[j] = c[j].colType[0];
+      }
+      xyttS->nrows = nminutiae;
+      return xyttS;
 }
 /***********************************************************************/
 
