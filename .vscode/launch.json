@@ -1,30 +1,32 @@
 {
     "version": "0.2.0",
     "configurations": [
-    {
-        "type": "gdb",
-        "request": "launch",
-        "name": "Launch by gdb",
-        "target": "./a.exe",
-        "arguments": "-v a0_2.xyt a0.xyt",
-        "cwd": "${workspaceRoot}"
-    },
         {
-            "name": "C++ native ",
-            "type": "cppvsdbg",
+            "type": "gdb",
             "request": "launch",
-            "program": "${workspaceRoot}/a.exe",
-            "args": ["-v a0.xyt a0_2.xyt"],
-            "stopAtEntry": true,
-            "cwd": "${workspaceRoot}",
-            "environment": [],
-            "externalConsole": false
+            "name": "Launch by gdb",
+            "target": "./a.exe",
+            "arguments": "-v a0_2.xyt a0.xyt",
+            "cwd": "${workspaceRoot}"
         },
         {
-            "name": "C++ Attach (Windows)",
-            "type": "cppvsdbg",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/a.exe",
+            "args": ["-v", "a0t.xyt","a0_2t.xyt"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:\\mingw\\bin\\gdb.exe",
+            "setupCommands": [{
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": false
+            }],
+            "preLaunchTask": "gcc"
         }
     ]
 }

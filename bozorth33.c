@@ -74,7 +74,7 @@ extern void print_version(FILE *);
 /**********************************************************************************/
 int main(int argc, char **argv)
 {
-	int nerrors = 0;
+ 	int nerrors = 0;
 	int parse_errors = 0;
 	int dry_run = 0;
 	int no_output = 0;
@@ -775,6 +775,7 @@ int main(int argc, char **argv)
 		{ /* unless probe file is fixed, load next probe file */
 			pstruct = bz_load(p);
 			pTstruct = bz_load_type(p);
+			printXyttStruct(p);
 			if (pstruct == XYT_NULL)
 			{
 				++nerrors;
@@ -824,7 +825,7 @@ int main(int argc, char **argv)
 		{
 			if (!no_output)
 			{
-				if (print_scores_at_end) //intresting ?
+				if (print_scores_at_end) 
 				{
 					char *scoreln;
 					if (line_count >= max_line_count)

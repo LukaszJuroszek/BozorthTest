@@ -128,22 +128,31 @@ int bozorth_main(
 #ifdef DEBUG
 	printf("PROBE_INIT() called\n");
 #endif
+
 	probe_len = bozorth_probe_init(pstruct);
+
 #ifdef DEBUG
 	printf("GALLERY_INIT() called\n");
 #endif
+
 	gallery_len = bozorth_gallery_init(gstruct);
+	
 #ifdef DEBUG
 	printf("BZ_MATCH() called\n");
 #endif
+
 	np = bz_match(probe_len, gallery_len);
+
 #ifdef DEBUG
 	printf("BZ_MATCH() returned %d edge pairs\n", np);
 	printf("COMPUTE() called\n");
 #endif
+
 	ms = bz_match_score(np, pstruct, gstruct);
+
 #ifdef DEBUG
 	printf("COMPUTE() returned %d\n", ms);
 #endif
+
 	return ms;
 }

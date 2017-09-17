@@ -136,7 +136,7 @@ void printXytqtStruct(struct xytqt_struct *value)
       printf("%s\n", "END");
 }
 const char *minTypes[] = {"undefined", "straight", "junction"};
-const char *getNameOfMinutiaeType(enum minType t)
+char *getNameOfMinutiaeType(enum minType t)
 {
       switch (t)
       {
@@ -150,9 +150,9 @@ const char *getNameOfMinutiaeType(enum minType t)
 }
 const enum minType getMinutiaeEnumTypeFromString(char *str)
 {
-      if (str == "straight")
+      if (strcmp(str, "Straight") == 0)
             return (enum minType)Straight;
-      else if (str == "junction")
+      else if (strcmp(str, "Junction") == 0)
             return (enum minType)Junction;
       else
             return (enum minType)Undefined;
@@ -532,14 +532,15 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
       //reading form file to tab[][]
       while (fgets(xytt_line, sizeof xytt_line, fp) != CNULL)
       {
+            typesvals_lng[nminutiae] = malloc(20 * sizeof(char*));        
             //Funkcje odczytują dane zgodnie z podanym formatem opisanym
-            //to znaczy że odczytywany jest wiersz z pliku
-            m = sscanf(xytt_line, "%d %d %d %d %s",
+            //to znaczy że odczytywany jest wiersz z pliku          
+            m = sscanf(xytt_line," %d %d %d %d %s\n",
                        &xvals_lng[nminutiae],
                        &yvals_lng[nminutiae],
                        &tvals_lng[nminutiae],
                        &qvals_lng[nminutiae],
-                       &typesvals_lng[MAX_FILE_MINUTIAE]);
+                       typesvals_lng[nminutiae]);
             if (nminutiae == 0)
             { //checking for saved information
                   if (m != 5)
@@ -828,6 +829,7 @@ struct xytt_struct *bz_prune_type(struct xytqt_struct *xytqt_input, int verbose_
                   yvals[j] = yvals_lng[order[j]];
                   tvals[j] = tvals_lng[order[j]];
                   qvals[j] = qvals_lng[order[j]];
+                  typevals[j] = malloc(20 * sizeof(char*));    
                   typevals[j] = type_lng[order[j]];
                   if (verbose_load)
                         fprintf(errorfp, "   %3d: %3d %3d %3d\n", j, xvals[j], yvals[j], qvals[j]);
@@ -873,6 +875,7 @@ struct xytt_struct *bz_prune_type(struct xytqt_struct *xytqt_input, int verbose_
             c[j].col[1] = yptr[j];
             c[j].col[2] = tptr[j];
             c[j].col[3] = qptr[j];
+            printf("%s",typetr[j] );
             c[j].colType[0] = typetr[j];
       }
       qsort((void *)&c, (size_t)nminutiae, sizeof(struct minutiae_struct_type), sort_x_y);
