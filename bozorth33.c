@@ -775,7 +775,7 @@ int main(int argc, char **argv)
 		{ /* unless probe file is fixed, load next probe file */
 			pstruct = bz_load(p);
 			pTstruct = bz_load_type(p);
-			printXyttStruct(p);
+			printXyttStruct(pTstruct);
 			if (pstruct == XYT_NULL)
 			{
 				++nerrors;

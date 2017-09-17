@@ -230,6 +230,7 @@ struct xytq_struct
 #define XYT_NULL ((struct xyt_struct *)NULL)   /* bz_load() */
 #define XYTQ_NULL ((struct xytq_struct *)NULL) /* bz_load() */
 //added functions
+#define MAX_TYPE_STRING_SIZE 20
 struct minutiae_struct_type
 {
 	int col[4];
