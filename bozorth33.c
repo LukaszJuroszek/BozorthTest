@@ -121,6 +121,7 @@ int main(int argc, char **argv)
 	char **lines = (char **)NULL;
 	struct xyt_struct *pstruct = XYT_NULL;
 	struct xytt_struct *pTstruct = ((struct xytt_struct *)NULL);
+	struct xytt_struct *gTstruct = ((struct xytt_struct *)NULL);
 	struct xyt_struct *gstruct = XYT_NULL;
 	int probe_len = 0; /* set and used only with a fixed_probe_file */
 	int pline_begin = -1;
@@ -717,6 +718,7 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		int n = 0;
+		int nT = 0;
 		char *p;
 		char *g;
 		int ok;
@@ -786,6 +788,8 @@ int main(int argc, char **argv)
 		if (fixed_gallery_file == CNULL)
 		{ /* unless gallery file is fixed, load next gallery file */
 			gstruct = bz_load(g);
+			gTstruct = bz_load_type(g);
+			printXyttStruct(gTstruct);			
 			if (gstruct == XYT_NULL)
 			{
 				++nerrors;
@@ -811,6 +815,7 @@ int main(int argc, char **argv)
 			else
 			{
 				n = bozorth_main(pstruct, gstruct);
+				nT = bozorth_main_type(pTstruct, gTstruct);
 			}
 		}
 		++computations;

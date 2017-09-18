@@ -61,7 +61,7 @@ of the software.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <bozorth.h>
+#include "include/bozorth.h"
 /**************************************************************************/
 int bozorth_probe_init(struct xyt_struct *pstruct)
 {
@@ -136,7 +136,7 @@ int bozorth_main(
 #endif
 
 	gallery_len = bozorth_gallery_init(gstruct);
-	
+
 #ifdef DEBUG
 	printf("BZ_MATCH() called\n");
 #endif
@@ -154,5 +154,60 @@ int bozorth_main(
 	printf("COMPUTE() returned %d\n", ms);
 #endif
 
+	return ms;
+}
+int bozorth_probe_init_type(struct xytt_struct *pTstruct)
+{
+	int sim;  /* number of pointwise comparisons for Subject's record*/
+	int msim; /* Pruned length of Subject's comparison pointer list */
+	/* Take Subject's points and compute pointwise comparison statistics table and sorted row-pointer list. */
+	/* This builds a "Web" of relative edge statistics between points. */
+	bz_comp(
+		pTstruct->nrows,
+		pTstruct->xcol,
+		pTstruct->ycol,
+		pTstruct->thetacol,
+		&sim,
+		scols,
+		scolpt);
+	msim = sim; /* Init search to end of Subject's pointwise comparison table (last edge in Web) */
+	bz_find(&msim, scolpt);
+	if (msim < FDD) /* Makes sure there are a reasonable number of edges (at least 500, if possible) to analyze in the Web */
+		msim = (sim > FDD) ? FDD : sim;
+	return msim;
+}
+int bozorth_gallery_init_type(struct xytt_struct *gTstruct)
+{
+	int fim;  /* number of pointwise comparisons for On-File record*/
+	int mfim; /* Pruned length of On-File Record's pointer list */
+	/* Take On-File Record's points and compute pointwise comparison statistics table and sorted row-pointer list. */
+	/* This builds a "Web" of relative edge statistics between points. */
+	bz_comp(
+		gTstruct->nrows,
+		gTstruct->xcol,
+		gTstruct->ycol,
+		gTstruct->thetacol,
+		&fim,
+		fcols,
+		fcolpt);
+	mfim = fim; /* Init search to end of On-File Record's pointwise comparison table (last edge in Web) */
+	bz_find(&mfim, fcolpt);
+	if (mfim < FDD) /* Makes sure there are a reasonable number of edges (at least 500, if possible) to analyze in the Web */
+		mfim = (fim > FDD) ? FDD : fim;
+	return mfim;
+}
+/**************************************************************************/
+int bozorth_main_type(
+	struct xytt_struct *pTstruct,
+	struct xytt_struct *gTstruct)
+{
+	int ms;
+	int np;
+	int probe_len;
+	int gallery_len;
+	probe_len = bozorth_probe_init_type(pTstruct);
+	gallery_len = bozorth_gallery_init_type(gTstruct);
+	np = bz_match(probe_len, gallery_len);
+	ms = bz_match_score(np, pTstruct, gTstruct);
 	return ms;
 }

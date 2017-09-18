@@ -150,7 +150,6 @@ char *getNameOfMinutiaeType(enum minType t)
 }
 const enum minType getMinutiaeEnumTypeFromString(char *str)
 {
-   //   printf("%s", str);
       if (strcmp(str, "Straight") == 0)
             return (enum minType)Straight;
       else if (strcmp(str, "Junction") == 0)
