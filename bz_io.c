@@ -136,7 +136,7 @@ void printXytqtStruct(struct xytqt_struct *value)
       printf("%s\n", "END");
 }
 const char *minTypes[] = {"Undefined", "Straight", "Junction"};
-char *getNameOfMinutiaeType(enum minType t)
+const char *getNameOfMinutiaeType(enum minType t)
 {
       switch (t)
       {
@@ -532,10 +532,10 @@ struct xytt_struct *bz_load_type(const char *xytt_file)
       //reading form file to tab[][]
       while (fgets(xytt_line, sizeof xytt_line, fp) != CNULL)
       {
-            typesvals_lng[nminutiae] = malloc(MAX_TYPE_STRING_SIZE * sizeof(char*));        
+            typesvals_lng[nminutiae] = malloc(MAX_TYPE_STRING_SIZE * sizeof(char *));
             //Funkcje odczytują dane zgodnie z podanym formatem opisanym
-            //to znaczy że odczytywany jest wiersz z pliku          
-            m = sscanf(xytt_line," %d %d %d %d %s\n",
+            //to znaczy że odczytywany jest wiersz z pliku
+            m = sscanf(xytt_line, " %d %d %d %d %s\n",
                        &xvals_lng[nminutiae],
                        &yvals_lng[nminutiae],
                        &tvals_lng[nminutiae],
@@ -789,7 +789,7 @@ struct xytt_struct *bz_prune_type(struct xytqt_struct *xytqt_input, int verbose_
             xvals_lng[i] = xytqt_input->xcol[i];
             yvals_lng[i] = xytqt_input->ycol[i];
             qvals_lng[i] = xytqt_input->qualitycol[i];
-            type_lng[i] = malloc(MAX_TYPE_STRING_SIZE * sizeof(char*));        
+            type_lng[i] = malloc(MAX_TYPE_STRING_SIZE * sizeof(char *));
             type_lng[i] = getNameOfMinutiaeType(xytqt_input->typecol[i]);
             if (xytqt_input->thetacol[i] > 180)
                   tvals_lng[i] = xytqt_input->thetacol[i] - 360;
@@ -830,7 +830,7 @@ struct xytt_struct *bz_prune_type(struct xytqt_struct *xytqt_input, int verbose_
                   yvals[j] = yvals_lng[order[j]];
                   tvals[j] = tvals_lng[order[j]];
                   qvals[j] = qvals_lng[order[j]];
-                  typevals[j] = malloc(MAX_TYPE_STRING_SIZE * sizeof(char*));    
+                  typevals[j] = malloc(MAX_TYPE_STRING_SIZE * sizeof(char *));
                   typevals[j] = type_lng[order[j]];
                   if (verbose_load)
                         fprintf(errorfp, "   %3d: %3d %3d %3d\n", j, xvals[j], yvals[j], qvals[j]);

@@ -247,7 +247,7 @@ extern void printXyttStruct(struct xytt_struct *value);
 extern void printXytqtStruct(struct xytqt_struct *value);
 extern int bozorth_main_type(struct xytt_struct *, struct xytt_struct *);
 extern int bozorth_probe_init_type(struct xytt_struct *);
-extern int bozorth_gallery_init(_typestruct xytt_struct *);
+extern int bozorth_gallery_init_type(struct xytt_struct *);
 extern int bz_match_score_type(int, struct xytt_struct *, struct xytt_struct *);
 #define XYTT_NULL ((struct xytt_struct *)NULL) /* new type null (xytt)*/
 /**************************************************************************/

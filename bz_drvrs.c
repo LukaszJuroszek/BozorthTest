@@ -207,7 +207,7 @@ int bozorth_main_type(
 	int gallery_len;
 	probe_len = bozorth_probe_init_type(pTstruct);
 	gallery_len = bozorth_gallery_init_type(gTstruct);
-	np = bz_match(probe_len, gallery_len);
+	np = bz_match(probe_len, gallery_len); //todo
 	ms = bz_match_score(np, pTstruct, gTstruct);
 	return ms;
 }
